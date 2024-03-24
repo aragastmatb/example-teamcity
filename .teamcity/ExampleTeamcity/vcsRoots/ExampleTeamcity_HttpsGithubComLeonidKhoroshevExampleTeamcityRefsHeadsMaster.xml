@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vcs-root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="84d60d68-00a3-4596-941e-f6b93b50190a" type="jetbrains.git" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>https://github.com/LeonidKhoroshev/example-teamcity#refs/heads/master</name>
+  <param name="agentCleanFilesPolicy" value="ALL_UNTRACKED" />
+  <param name="agentCleanPolicy" value="ON_BRANCH_CHANGE" />
+  <param name="authMethod" value="PASSWORD" />
+  <param name="branch" value="refs/heads/master" />
+  <param name="ignoreKnownHosts" value="true" />
+  <param name="secure:password" value="zxx0d59606b0aa9670619336a3d6662840f9b4d1eb326d0fe50d6dc0ed3ee830fedb12d8e6a06741703775d03cbe80d301b" />
+  <param name="submoduleCheckout" value="CHECKOUT" />
+  <param name="teamcity:branchSpec" value="refs/heads/*" />
+  <param name="url" value="https://github.com/LeonidKhoroshev/example-teamcity" />
+  <param name="useAlternates" value="AUTO" />
+  <param name="username" value="khoroshevlv@gmail.com" />
+  <param name="usernameStyle" value="USERID" />
+</vcs-root>
+
