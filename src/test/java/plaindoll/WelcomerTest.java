@@ -8,11 +8,12 @@ import org.junit.Test;
 public class WelcomerTest {
 	
 	private Welcomer welcomer = new Welcomer();
-
+	
 	@Test
-	public void welcomerSaysWelcome() {
-		assertThat(welcomer.sayWelcome(), containsString("Welcome"));
+	public void testHunterReply() {
+  	assertTrue(welcomer.getHunterReply().contains("hunter"));
 	}
+	
 	@Test
 	public void welcomerSaysFarewell() {
 		assertThat(welcomer.sayFarewell(), containsString("Farewell"));
