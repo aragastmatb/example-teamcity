@@ -1,6 +1,8 @@
 package plaindoll;
 
 public class Welcomer{
+	private Random random = new Random();
+	
 	public String sayWelcome() {
 		return "Welcome home, good hunter. What is it your desire?";
 	}
