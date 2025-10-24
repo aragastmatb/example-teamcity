@@ -13,4 +13,8 @@ public class Welcomer{
 	public String saySome(){
 		return "something in the way";
 	}
+	public String sayHunterLine() {
+        int index = random.nextInt(HUNTER_LINES.length);
+        return HUNTER_LINES[index];
+	}
 }
