@@ -48,4 +48,10 @@ object Netology_HttpsGithubComMlnstwExampleTeamcityZhukov : BuildType({
             userSettingsSelection = "settings.xml"
         }
     }
+		triggers {
+        vcs {
+            id = "VCS_TRIGGER"
+            branchFilter = "+:*"
+        }
+    }
 })
