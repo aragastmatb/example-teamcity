@@ -1,5 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
+import jetbrains.buildServer.configs.kotlin.buildSteps.script
 
 version = "2025.07"
 
@@ -35,17 +36,29 @@ object Netology_HttpsGithubComMlnstwExampleTeamcityZhukov : BuildType({
 
     steps {
         maven {
-            id = "Maven2"
-            goals = "%teamcity.build.branch.is_default%: clean deploy; -%teamcity.build.branch.is_default%: clean test"
+            id = "Maven_Deploy"
+            name = "Maven Deploy (master only)"
+            goals = "clean deploy"
             runnerArgs = "-Dmaven.test.failure.ignore=true"
             userSettingsSelection = "settings.xml"
+            conditions {
+                equals("teamcity.build.branch.is_default", "true")
+            }
+        }
+        maven {
+            id = "Maven_Test"
+            name = "Maven Test (non-master)"
+            goals = "clean test"
+            runnerArgs = "-Dmaven.test.failure.ignore=true"
+            userSettingsSelection = "settings.xml"
+            conditions {
+                doesNotEqual("teamcity.build.branch.is_default", "true")
+            }
         }
     }
 
     triggers {
         vcs {
-            id = "VCS_TRIGGER"
-            branchFilter = "+:*"
         }
     }
 })
