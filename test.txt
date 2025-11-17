@@ -1,0 +1,6 @@
+		triggers {
+        vcs {
+            id = "VCS_TRIGGER"
+            branchFilter = "+:*"
+        }
+    }
