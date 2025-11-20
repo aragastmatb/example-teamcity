@@ -20,4 +20,5 @@ public class Welcomer{
     public void testReplyHunter() {
         Welcomer w = new Welcomer();
         assertTrue(w.replyHunter().contains("hunter"));
+    }
 }
