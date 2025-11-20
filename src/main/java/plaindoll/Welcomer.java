@@ -13,4 +13,11 @@ public class Welcomer{
 	public String saySome(){
 		return "something in the way";
 	}
+	public String replyHunter() {
+    return "Hey hunter, welcome!";
+    }
+	@Test
+    public void testReplyHunter() {
+        Welcomer w = new Welcomer();
+        assertTrue(w.replyHunter().contains("hunter"));
 }
