@@ -14,7 +14,7 @@
     - name: Install JDK
       become: true
       package:
-        name: [java-1.8.0-openjdk, java-1.8.0-openjdk-devel]
+        name: [openjdk-11-jdk]
         state: present
   tasks:
     - name: Create Nexus directories
