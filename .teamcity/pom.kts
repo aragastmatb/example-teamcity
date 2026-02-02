@@ -1,4 +1,3 @@
-// .teamcity/pom.kts
 import jetbrains.buildServer.configs.kotlin.v2025_11.*
 import jetbrains.buildServer.configs.kotlin.v2025_11.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.v2025_11.triggers.vcs
@@ -11,28 +10,33 @@ object Build : BuildType({
         root(RelativeId("Team"))
     }
     
-    // ДВА ШАГА С УСЛОВИЯМИ:
     steps {
-        // Шаг 1: Деплой для master ветки
+        // Шаг 1: Для master ветки - deploy с использованием settings.xml
         maven {
-            name = "Deploy on master"
+            name = "Deploy on master branch"
             conditions {
-                // Выполняется только для master ветки
                 or {
                     equals("teamcity.build.branch", "master")
                     equals("teamcity.build.branch", "refs/heads/master")
-                    // Для дефолтной ветки (если параметр пустой)
                     matches("teamcity.build.branch", "")
                 }
             }
             goals = "clean deploy"
+            
+            // ИСПОЛЬЗУЕМ settings.xml ИЗ TEAMCITY
+            mavenSettings = id("Nexus_Settings")  // Имя, которое вы дали при загрузке
+            
+            // Дополнительные опции для деплоя
+            runnerArgs = """
+                -DskipTests
+                -DaltDeploymentRepository=nexus-releases::default::http://89.169.153.234:8081/repository/maven-releases/
+            """.trimIndent()
         }
         
-        // Шаг 2: Тесты для других веток
+        // Шаг 2: Для других веток - test
         maven {
             name = "Test on other branches"
             conditions {
-                // Выполняется для всех веток кроме master
                 and {
                     isNotEmpty("teamcity.build.branch")
                     doesNotEqual("teamcity.build.branch", "master")
@@ -40,6 +44,9 @@ object Build : BuildType({
                 }
             }
             goals = "clean test"
+            
+            // Для тестов тоже можно использовать settings.xml для загрузки зависимостей
+            mavenSettings = id("Nexus_Settings")
         }
     }
     
@@ -56,33 +63,5 @@ object Build : BuildType({
             target/*.jar => artifacts/
             **/target/*.jar => artifacts/
         """.trimIndent()
-    }
-})
-
-object Deploy : BuildType({
-    name = "Deploy"
-    id = RelativeId("Deploy")
-    
-    vcs {
-        root(RelativeId("Team"))
-    }
-    
-    dependencies {
-        artifacts(RelativeId("Build")) {
-            buildRule = lastSuccessful()
-            useIvyFormat = false
-            cleanDestination = true
-            artifactRules = "artifacts/*.jar => build-output/"
-        }
-    }
-    
-    steps {
-        script {
-            name = "Show downloaded artifacts"
-            scriptContent = """
-                echo "Artifacts for deployment:"
-                ls -la build-output/
-            """
-        }
     }
 })
