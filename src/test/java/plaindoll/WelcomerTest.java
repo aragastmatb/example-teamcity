@@ -30,4 +30,18 @@ public class WelcomerTest {
 	public void welcomerSaysSomething(){
 		assertThat(welcomer.saySome(), containsString("something"));
 	}
+	
+	// Новый тест для метода getHunterReply - поиск слова hunter в новой реплике
+	@Test
+	public void welcomerHunterReplyContainsHunter() {
+		// Получаем реплику из нового метода
+		String hunterReply = welcomer.getHunterReply();
+		
+		// Проверяем, что реплика содержит слово "hunter" (регистронезависимо)
+		assertThat(
+			"Новая реплика должна содержать слово 'hunter'", 
+			hunterReply.toLowerCase(), 
+			containsString("hunter")
+		);
+	}
 }
