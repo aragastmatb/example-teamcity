@@ -29,6 +29,7 @@ version = "2025.11"
 project {
 
     buildType(Build)
+    buildType(Build1)
 }
 
 object Build : BuildType({
@@ -40,12 +41,40 @@ object Build : BuildType({
 
     steps {
         maven {
+            name = "Name: Deploy to Nexus (master only)"
             id = "Maven2"
 
             conditions {
                 contains("teamcity.build.branch", "master")
+                doesNotContain("teamcity.build.branch", "master")
             }
             goals = "clean deploy"
+            runnerArgs = "-Dmaven.test.failure.ignore=true"
+            userSettingsSelection = "settings (1).xml"
+        }
+    }
+
+    features {
+        perfmon {
+        }
+    }
+})
+
+object Build1 : BuildType({
+    name = "Build 1"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        maven {
+            id = "Maven2"
+
+            conditions {
+                doesNotContain("teamcity.build.branch", "master")
+            }
+            goals = "clean test"
             runnerArgs = "-Dmaven.test.failure.ignore=true"
             userSettingsSelection = "settings (1).xml"
         }
