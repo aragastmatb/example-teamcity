@@ -1,28 +1,47 @@
-<distributionManagement>
-    <repository>
-        <id>nexus-releases</id>
-        <url>http://93.77.184.56:8081/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-        <id>nexus-snapshots</id>
-        <url>http://93.77.184.56:8081/repository/maven-snapshots/</url>
-    </snapshotRepository>
-</distributionManagement>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <!-- Обязательные элементы -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>   <!-- Замените на ваш groupId -->
+    <artifactId>my-project</artifactId> <!-- Замените на ваш artifactId -->
+    <version>1.0.0</version> <!-- Замените на вашу версию -->
 
-<repositories>
-    <repository>
-        <id>nexus</id>
-        <url>http://93.77.184.56:8081/repository/maven-public/</url>
-        <releases><enabled>true</enabled></releases>
-        <snapshots><enabled>true</enabled></snapshots>
-    </repository>
-</repositories>
+    <!-- Секция distributionManagement -->
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <url>http://93.77.184.56:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <url>http://93.77.184.56:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
-<pluginRepositories>
-    <pluginRepository>
-        <id>nexus</id>
-        <url>http://93.77.184.56:8081/repository/maven-public/</url>
-        <releases><enabled>true</enabled></releases>
-        <snapshots><enabled>true</enabled></snapshots>
-    </pluginRepository>
-</pluginRepositories>
+    <!-- Секция repositories -->
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <url>http://93.77.184.56:8081/repository/maven-public/</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+    </repositories>
+
+    <!-- Секция pluginRepositories -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>nexus</id>
+            <url>http://93.77.184.56:8081/repository/maven-public/</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- Другие необходимые секции, такие как dependencies, build и т.д. -->
+
+</project>
