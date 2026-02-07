@@ -42,6 +42,24 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <!-- Другие необходимые секции, такие как dependencies, build и т.д. -->
+    <dependencies>
+   <!-- Другие зависимости -->
+
+   <!-- JUnit 4 -->
+   <dependency>
+       <groupId>junit</groupId>
+       <artifactId>junit</artifactId>
+       <version>4.13.2</version>
+       <scope>test</scope>
+   </dependency>
+
+   <!-- Hamcrest -->
+   <dependency>
+       <groupId>org.hamcrest</groupId>
+       <artifactId>hamcrest</artifactId>
+       <version>2.2</version>
+       <scope>test</scope>
+   </dependency>
+</dependencies>
 
 </project>
