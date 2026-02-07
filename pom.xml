@@ -3,14 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
-    <!-- Обязательные элементы -->
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>   <!-- Замените на ваш groupId -->
-    <artifactId>my-project</artifactId> <!-- Замените на ваш artifactId -->
-    <version>1.0.0</version> <!-- Замените на вашу версию -->
-
-    <!-- Секция distributionManagement -->
+          <!-- Секция distributionManagement -->
     <distributionManagement>
         <repository>
             <id>nexus-releases</id>
