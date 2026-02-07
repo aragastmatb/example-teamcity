@@ -19,7 +19,7 @@
         <mirror>
             <id>nexus-mirror</id>
             <mirrorOf>*</mirrorOf>
-            <url>http://178.154.221.52:8081/repository/maven-public/</url>
+            <url>http://93.77.184.56:8081/repository/maven-public/</url>
         </mirror>
     </mirrors>
 </settings>
