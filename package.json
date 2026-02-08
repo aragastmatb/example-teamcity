@@ -1,0 +1,25 @@
+{
+  "name": "reply-service",
+  "version": "1.0.0-SNAPSHOT",
+  "description": "Reply functionality for comments system",
+  "main": "src/reply-service/index.js",
+  "scripts": {
+    "test": "jest",
+    "test:e2e": "jest --config jest.e2e.config.js",
+    "lint": "eslint src/",
+    "build": "node build.js",
+    "start": "node src/reply-service/server.js"
+  },
+  "keywords": ["reply", "comments", "feature"],
+  "author": "TeamCity User",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "eslint": "^8.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "sequelize": "^6.0.0",
+    "redis": "^4.0.0"
+  }
+}
