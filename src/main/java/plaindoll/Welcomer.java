@@ -15,4 +15,17 @@ public class Welcomer{
 	public String saySome(){
 		return "something in the way";
 	}
+	
+	// Новый метод, который возвращает произвольную реплику со словом hunter
+	public String giveHunterReply() {
+		String[] replies = {
+			"The hunter must hunt beasts.",
+			"A hunter is a hunter, even in a dream.",
+			"Every hunter needs a helping hand.",
+			"The night is long, hunter.",
+			"May the good blood guide your way, hunter."
+		};
+		int randomIndex = (int)(Math.random() * replies.length);
+		return replies[randomIndex];
+	}
 }
