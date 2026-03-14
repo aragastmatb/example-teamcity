@@ -15,5 +15,8 @@ Created copy of Build step. Changed golas to clean test and added condition to i
 ![Build2](build2.jpg)  
 Ran the Build steps and checked for changes in Nexus  
 ![nexus1](nexus1.jpg)  
-### Steps 8- ###  
+### Step 8 ###  
+Configured build configuration export to github repo  
 ![Build2vcs](build2vcs.png)  
+### Step 9 ###  
+Added feature/add_replay 
