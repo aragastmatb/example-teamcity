@@ -37,6 +37,9 @@ object Test : BuildType({
 
     vcs {
         root(DslContext.settingsRoot)
+        branchFilter = """
+            +:*
+        """.trimIndent()
     }
 
     steps {
@@ -50,7 +53,7 @@ object Test : BuildType({
             goals = "clean test"
         }
         maven {
-            id = "Maven2"
+            id = "Maven_deploy"
 
             conditions {
                 equals("vcsroot.branch", "refs/heads/master")
