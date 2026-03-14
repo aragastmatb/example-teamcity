@@ -2,6 +2,7 @@ import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -58,6 +59,14 @@ object Test : BuildType({
             goals = "clean deploy"
             runnerArgs = "-Dmaven.test.failure.ignore=true"
             userSettingsSelection = "settings.xml"
+        }
+    }
+
+    triggers {
+        vcs {
+            branchFilter = ""
+            perCheckinTriggering = true
+            enableQueueOptimization = false
         }
     }
 
