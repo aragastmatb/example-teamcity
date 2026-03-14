@@ -13,3 +13,7 @@ Added condition for Build step for master and changed goals to clean deploy.
 ![Build1](build1.jpg)  
 Created copy of Build step. Changed golas to clean test and added condition to ignore master branch.     
 ![Build2](build2.jpg)  
+Ran the Build steps and checked for changes in Nexus  
+![nexus1](nexus1.jpg)  
+### Steps 8- ###  
+![Build2vcs](build2vcs.png)  
