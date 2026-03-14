@@ -1,4 +1,4 @@
-== Teamcity homework ==  
+## Teamcity homework ##  
 During pre tasks created VMs with dockerized services Teamcity server and Teamcity agent.  
 Initialized new teamcity server.  
 Authorized new agent in Tamecity server.  
