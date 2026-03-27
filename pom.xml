@@ -13,11 +13,17 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<distributionManagement>
-		<repository>
-				<id>nexus</id>
-				<url>http://51.250.13.64:8081/repository/maven-releases</url>
-		</repository>
-	</distributionManagement>
+  	<repository>
+    		<id>nexus</id>
+    		<name>Nexus Releases</name>
+    		<url>http://158.160.38.55:8081/repository/maven-releases/</url>
+  	</repository>
+  	<snapshotRepository>
+    		<id>nexus</id>
+    		<name>Nexus Snapshots</name>
+    	<url>http://158.160.38.55:8081/repository/maven-snapshots/</url>
+  	</snapshotRepository>
+	</distributionManagement></distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
