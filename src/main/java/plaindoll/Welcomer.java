@@ -15,4 +15,7 @@ public class Welcomer{
 	public String saySome(){
 		return "something in the way";
 	}
+	public String sayHunterST(){
+		return "You are now leaving Fear & Loathing, hunter. Pop 0";
+	}
 }
