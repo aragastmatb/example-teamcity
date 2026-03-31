@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="0d721ce3-0cb2-4f56-9c64-6624c50099a2" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>Build</name>
+  <description />
+  <settings>
+    <build-runners>
+      <runner id="Maven2" name="new step" type="Maven2">
+        <parameters>
+          <param name="goals" value="clean deploy" />
+          <param name="localRepoScope" value="agent" />
+          <param name="maven.path" value="%teamcity.tool.maven.AUTO%" />
+          <param name="pomLocation" value="pom.xml" />
+          <param name="runnerArgs" value="-Dmaven.test.failure.ignore=true" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="userSettingsSelection" value="setting" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="Netologia_HttpsGithubComNastil2019exampleTeamcityRefsHeadsMaster" />
+    </vcs-settings>
+    <build-extensions>
+      <extension id="perfmon" type="perfmon" />
+    </build-extensions>
+  </settings>
+</build-type>
+
