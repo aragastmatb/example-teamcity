@@ -15,4 +15,11 @@ public class Welcomer{
 	public String saySome(){
 		return "something in the way";
 	}
+	/**
+ * Returns a reply containing the word "hunter"
+ * @return reply string with "hunter"
+ */
+    public String getHunterReply() {
+        return "The hunter is coming!";
+    }
 }
