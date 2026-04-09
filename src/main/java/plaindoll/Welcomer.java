@@ -15,4 +15,9 @@ public class Welcomer{
 	public String saySome(){
 		return "something in the way";
 	}
+	
+	// НОВЫЙ МЕТОД - добавляем его сюда
+	public String getHunterReply() {
+		return "The hunter never rests in the pursuit of knowledge.";
+	}
 }
