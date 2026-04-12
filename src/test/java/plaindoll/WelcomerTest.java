@@ -2,6 +2,7 @@ package plaindoll;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -32,4 +33,10 @@ public class WelcomerTest {
 	public void welcomerSaysSomething(){
 		assertThat(welcomer.saySome(), containsString("something"));
 	}
+	
+	@Test
+    public void welcomerSaysHunterReply() {
+        Welcomer welcomer = new Welcomer();
+        assertTrue(welcomer.getHunterReply().contains("hunter"));
+    }
 }
