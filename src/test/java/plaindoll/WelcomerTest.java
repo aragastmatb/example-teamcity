@@ -34,7 +34,7 @@ public class WelcomerTest {
 	}
 	
 	@Test
-    public void welcomerSaysHunter() {
+    public void welcomerSaysHunterReply() {
         Welcomer welcomer = new Welcomer();
         assertTrue(welcomer.getHunterReply().contains("hunter"));
     }
