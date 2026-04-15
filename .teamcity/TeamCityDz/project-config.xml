@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="6d6bea25-61f5-474c-b0f2-2c2dfdd0cadc" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>TeamCity-dz</name>
+  <parameters>
+    <param name="nexus.password" value="credentialsJSON:ec6d1671-464f-49dc-bf00-b502318d61c9" spec="password display='normal'" />
+    <param name="nexus.username" value="admin" />
+    <param name="type_branch" value="%teamcity.build.branch%" />
+  </parameters>
+  <project-extensions>
+    <extension id="PROJECT_EXT_2" type="versionedSettings">
+      <parameters>
+        <param name="buildSettings" value="ALWAYS_USE_CURRENT" />
+        <param name="credentialsStorageType" value="credentialsJSON" />
+        <param name="enabled" value="true" />
+        <param name="ignoreChangesInDependenciesAndVcsSettings" value="false" />
+        <param name="rootId" value="TeamCityDz_HttpsGithubComMaybeRExampleTeamcityGitRefsHeadsMaster" />
+        <param name="showChanges" value="false" />
+      </parameters>
+    </extension>
+  </project-extensions>
+</project>
+
