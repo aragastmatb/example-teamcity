@@ -12,12 +12,6 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-	<distributionManagement>
-		<repository>
-				<id>nexus</id>
-				<url>http://51.250.13.64:8081/repository/maven-releases</url>
-		</repository>
-	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -51,5 +45,11 @@
 			</plugin>
 		</plugins>
 	</build>
-
+<distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <name>Nexus Releases</name>
+            <url>http://111.88.247.90:8081/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
 </project>
