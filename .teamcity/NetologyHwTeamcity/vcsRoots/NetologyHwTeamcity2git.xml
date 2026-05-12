@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vcs-root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="3b446a48-69ee-45ec-a54e-d1ca22701a28" type="jetbrains.git" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2021.1/project-config.xsd">
+  <name>fedinly</name>
+  <param name="agentCleanFilesPolicy" value="ALL_UNTRACKED" />
+  <param name="agentCleanPolicy" value="ON_BRANCH_CHANGE" />
+  <param name="authMethod" value="TEAMCITY_SSH_KEY" />
+  <param name="branch" value="master" />
+  <param name="ignoreKnownHosts" value="true" />
+  <param name="secure:password" value="" />
+  <param name="submoduleCheckout" value="CHECKOUT" />
+  <param name="teamcitySshKey" value="id_rsa" />
+  <param name="url" value="git@github.com:fedinly/example-teamcity-2.git" />
+  <param name="useAlternates" value="AUTO" />
+  <param name="username" value="fedinly" />
+  <param name="usernameStyle" value="USERID" />
+</vcs-root>
+
