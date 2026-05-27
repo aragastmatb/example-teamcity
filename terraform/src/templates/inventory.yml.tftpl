@@ -1,0 +1,54 @@
+# ============================================================================
+# ANSIBLE INVENTORY — Сгенерировано Terraform
+# ⚠️ Не редактируйте вручную: изменения будут перезаписаны при terraform apply
+# ============================================================================
+
+all:
+  # Глобальные переменные для всех хостов
+  vars:
+    ansible_python_interpreter: /usr/bin/python3  # Для Ubuntu 22.04
+    environment: ${environment}
+    project: ${project}
+    
+  # Группы хостов для целевого выполнения задач
+  children:
+    # ==================== TEAMCITY SERVER ====================
+    teamcity_servers:
+      hosts:
+        ${teamcity_server.hostname}:
+          ansible_host: ${teamcity_server.ansible_host}
+          internal_ip: ${teamcity_server.internal_ip}
+          ansible_user: ${teamcity_server.ansible_user}
+          ansible_ssh_private_key_file: ${teamcity_server.ansible_ssh_private_key_file}
+          vm_role: ${teamcity_server.vm_role}
+          teamcity_url: ${teamcity_server.teamcity_url}
+          
+    # ==================== TEAMCITY AGENT ====================
+    teamcity_agents:
+      hosts:
+        ${teamcity_agent.hostname}:
+          ansible_host: ${teamcity_agent.ansible_host}
+          internal_ip: ${teamcity_agent.internal_ip}
+          ansible_user: ${teamcity_agent.ansible_user}
+          ansible_ssh_private_key_file: ${teamcity_agent.ansible_ssh_private_key_file}
+          vm_role: ${teamcity_agent.vm_role}
+          server_url: ${teamcity_agent.server_url}
+          
+    # ==================== NEXUS REPOSITORY ====================
+    nexus_servers:
+      hosts:
+        ${nexus.hostname}:
+          ansible_host: ${nexus.ansible_host}
+          internal_ip: ${nexus.internal_ip}
+          ansible_user: ${nexus.ansible_user}
+          ansible_ssh_private_key_file: ${nexus.ansible_ssh_private_key_file}
+          vm_role: ${nexus.vm_role}
+          nexus_url: ${nexus.nexus_url}
+          
+    # ==================== ОБЪЕДИНЁННАЯ ГРУППА ====================
+    # Все хосты инфраструктуры для выполнения общих задач
+    ci_infrastructure:
+      children:
+        teamcity_servers:
+        teamcity_agents:
+        nexus_servers:

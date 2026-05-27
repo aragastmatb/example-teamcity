@@ -1,0 +1,102 @@
+---
+# ============================================================================
+# ROLE: teamcity-agent
+# Задачи: настройка Build Agent для выполнения задач сборки
+# ============================================================================
+
+- name: 🔐 Создать пользователя для агента (если не существует)
+  user:
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    system: yes
+    shell: /bin/bash  # Агент может требовать интерактивный shell для некоторых задач
+    home: "{{ app_home }}"
+    create_home: yes
+    state: present
+  tags: [users, agent]
+
+- name: 📁 Создать директории для агента
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0755'
+  loop:
+    - "{{ teamcity_agent_home }}"
+    - "{{ app_home }}/.m2"
+    - "{{ app_home }}/builds"
+  tags: [dirs, agent]
+
+- name: ⚙️ Настроить buildAgent.properties
+  template:
+    src: buildAgent.properties.j2
+    dest: "{{ teamcity_agent_home }}/conf/buildAgent.properties"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0644'
+    backup: yes
+  notify: Restart TeamCity Agent
+  tags: [config, agent]
+
+- name: 🔗 Настроить Maven settings для агента
+  template:
+    src: maven-settings.xml.j2
+    dest: "{{ app_home }}/.m2/settings.xml"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0600'
+  tags: [config, maven, agent]
+
+- name: 🛠 Установить дополнительные инструменты для сборки
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - git
+    - curl
+    - unzip
+    - build-essential  # Для компиляции нативных зависимостей
+    - libssl-dev
+  tags: [packages, agent]
+
+- name: 🔄 Настроить systemd сервис для агента
+  template:
+    src: teamcity-agent.service.j2
+    dest: /etc/systemd/system/teamcity-agent.service
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart TeamCity Agent
+  tags: [systemd, agent]
+
+- name: 🚀 Запустить и включить агент в автозагрузку
+  systemd:
+    name: teamcity-agent
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  tags: [service, agent]
+
+- name: ✅ Проверить статус агента
+  command: systemctl is-active teamcity-agent
+  register: agent_status
+  changed_when: false
+  tags: [healthcheck, agent]
+
+- name: 📋 Вывести информацию об агенте
+  debug:
+    msg: |
+      ✅ TeamCity Agent настроен!
+      
+      Статус: {{ agent_status.stdout }}
+      Домашняя директория: {{ teamcity_agent_home }}
+      Подключён к серверу: {{ teamcity_server_url }}
+      
+      🔍 Проверка в TeamCity:
+        → Administration → Agents → ожидайте появления нового агента
+        → Нажмите "Authorize" для подключения
+      
+      📋 Логи: journalctl -u teamcity-agent -f
+  tags: [info, agent]

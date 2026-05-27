@@ -1,0 +1,80 @@
+---
+# ============================================================================
+# ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ANSIBLE
+# Применяются ко всем хостам в инвентаре
+# ============================================================================
+
+# ----------------- СИСТЕМНЫЕ НАСТРОЙКИ -----------------
+
+# Часовой пояс для синхронизации логов
+system_timezone: "Europe/Moscow"
+
+# NTP-серверы для точного времени (важно для сертификатов и логов)
+ntp_servers:
+  - 0.ru.pool.ntp.org
+  - 1.ru.pool.ntp.org
+
+# Пользователь для запуска приложений (не root!)
+app_user: "teamcity"
+app_group: "teamcity"
+app_home: "/home/{{ app_user }}"
+
+# ----------------- JAVA И MAVEN -----------------
+
+# Версия Java для всех компонентов
+java_version: "17"
+java_package: "openjdk-{{ java_version }}-jdk-headless"
+
+# Версия Maven
+maven_version: "3.9.6"
+maven_download_url: "https://archive.apache.org/dist/maven/maven-3/{{ maven_version }}/binaries/apache-maven-{{ maven_version }}-bin.tar.gz"
+maven_install_dir: "/opt/maven"
+
+# Настройки Maven
+maven_user_settings: "{{ app_home }}/.m2/settings.xml"
+
+# ----------------- TEAMCITY НАСТРОЙКИ -----------------
+
+# Пути установки
+teamcity_server_home: "/opt/teamcity"
+teamcity_server_data: "/var/lib/teamcity"
+teamcity_agent_home: "/opt/teamcity-agent"
+
+# JVM параметры для оптимизации под выделенные ресурсы
+teamcity_server_jvm:
+  xms: "1024m"   # Начальный размер кучи
+  xmx: "2048m"   # Максимальный размер кучи
+  reserved_code_cache: "320m"
+  gc: "G1GC"     # Сборщик мусора для серверных приложений
+
+teamcity_agent_jvm:
+  xms: "512m"
+  xmx: "1536m"
+
+# Порты сервисов
+teamcity_server_port: 8111
+teamcity_agent_listener_port: 9090
+
+# ----------------- NEXUS НАСТРОЙКИ -----------------
+
+nexus_version: "3.61.0-02"
+nexus_install_dir: "/opt/nexus"
+nexus_data_dir: "/var/nexus-data"
+nexus_user: "nexus"
+nexus_port: 8081
+
+# Репозитории Nexus для Maven (используют внутренний IP для надёжности)
+nexus_maven:
+  public_url: "http://{{ nexus_internal_ip | default('nexus') }}:{{ nexus_port }}/repository/maven-public/"
+  releases_url: "http://{{ nexus_internal_ip | default('nexus') }}:{{ nexus_port }}/repository/maven-releases/"
+  snapshots_url: "http://{{ nexus_internal_ip | default('nexus') }}:{{ nexus_port }}/repository/maven-snapshots/"
+
+# ----------------- БЕЗОПАСНОСТЬ -----------------
+
+# Автоматические обновления безопасности
+unattended_upgrades_enabled: true
+
+# Fail2ban для защиты SSH от брутфорса
+fail2ban_enabled: true
+fail2ban_ssh_max_attempts: 5
+fail2ban_ban_time: "3600"  # 1 час блокировки
