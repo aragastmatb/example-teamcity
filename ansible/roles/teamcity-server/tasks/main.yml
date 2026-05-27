@@ -1,0 +1,104 @@
+---
+# ============================================================================
+# ROLE: teamcity-server
+# Задачи: финальная настройка TeamCity Server после cloud-init
+# ============================================================================
+
+- name: 🔐 Создать группу и пользователя для TeamCity
+  group:
+    name: "{{ app_group }}"
+    system: yes
+    state: present
+  tags: [users, teamcity]
+
+- name: 🔐 Создать пользователя TeamCity без прав на login
+  user:
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    system: yes
+    shell: /usr/sbin/nologin  # Запрет интерактивного входа
+    home: "{{ teamcity_server_data }}"
+    create_home: no
+    state: present
+  tags: [users, teamcity]
+
+- name: 📁 Создать директории для TeamCity
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0755'
+  loop:
+    - "{{ teamcity_server_home }}"
+    - "{{ teamcity_server_data }}"
+    - "{{ teamcity_server_data }}/config"
+    - "{{ teamcity_server_data }}/logs"
+    - "{{ teamcity_server_data }}/system"
+  tags: [dirs, teamcity]
+
+- name: ⚙️ Настроить JVM параметры для TeamCity Server
+  template:
+    src: teamcity-server.vmoptions.j2
+    dest: "{{ teamcity_server_home }}/conf/teamcity-server.vmoptions"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0644'
+    backup: yes
+  notify: Restart TeamCity Server
+  tags: [config, teamcity]
+
+- name: 🔗 Настроить интеграцию с Nexus (Maven settings)
+  template:
+    src: maven-settings.xml.j2
+    dest: "{{ teamcity_server_data }}/config/maven-settings.xml"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0600'  # 🔐 Секретный файл с паролями — строгие права!
+    backup: yes
+  tags: [config, nexus, teamcity]
+
+- name: 🔄 Настроить systemd сервис для TeamCity
+  template:
+    src: teamcity-server.service.j2
+    dest: /etc/systemd/system/teamcity-server.service
+    mode: '0644'
+  notify: 
+    - Reload systemd
+    - Restart TeamCity Server
+  tags: [systemd, teamcity]
+
+- name: 🚀 Убедиться, что TeamCity Server запущен и включен в автозагрузку
+  systemd:
+    name: teamcity-server
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  tags: [service, teamcity]
+
+- name: ⏳ Дождаться готовности TeamCity Web UI
+  uri:
+    url: "http://localhost:{{ teamcity_server_port }}"
+    status_code: [200, 302, 401]  # 401 = требуется авторизация (уже хорошо)
+    timeout: 300  # 5 минут на старт
+  register: teamcity_health
+  retries: 30
+  delay: 10
+  until: teamcity_health.status is defined
+  tags: [healthcheck, teamcity]
+
+- name: 📋 Вывести информацию для пользователя
+  debug:
+    msg: |
+      ✅ TeamCity Server настроен!
+      
+      🌐 Веб-интерфейс: http://{{ ansible_host }}:{{ teamcity_server_port }}
+      📁 Данные: {{ teamcity_server_data }}
+      📋 Логи: journalctl -u teamcity-server -f
+      
+      🔑 Первый запуск:
+        1. Откройте веб-интерфейс
+        2. Создайте пользователя-администратора
+        3. Введите лицензионный ключ (или используйте Trial)
+        4. Добавьте Build Agent через SERVER_URL
+  tags: [info, teamcity]

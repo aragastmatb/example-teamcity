@@ -1,0 +1,29 @@
+# ======================================================================
+# terraform.tfvars.example — ПРИМЕР ФАЙЛА ПЕРЕМЕННЫХ
+# Скопируйте в terraform.tfvars и заполните своими данными
+# ======================================================================
+
+cloud_id                 = "b1gxxxxxxxxxxxxxxxx"
+folder_id                = "b1gxxxxxxxxxxxxxxxx"
+default_zone             = "ru-central1-a"
+service_account_key_file = "~/.config/yandex-cloud/sa-key.json"
+
+environment = "dev"
+
+vpc_name       = "network"
+subnet_name    = "subnet"
+v4_cidr_blocks = ["192.168.10.0/24"]
+
+vm_name         = "vm"
+image_family    = "ubuntu-2204-lts"
+vm_cores        = 2
+vm_memory       = 1
+vm_disk_size    = 10
+preemptible     = true
+
+ssh_public_key    = "ssh-rsa AAAAB3NzaC1yc2EAAAA... your@email.com"
+allowed_ssh_cidr  = "85.32.xx.xx/32"
+
+project_name = "teamcity-cicd"
+
+nexus_admin_password = "nexus_pswd_strong!"
