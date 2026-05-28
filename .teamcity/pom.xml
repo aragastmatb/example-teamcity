@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <!-- 🔑 Версия должна ТОЧНО совпадать с версией сервера -->
+        <!-- 🔑 Должна ТОЧНО совпадать с версией сервера -->
         <teamcity.dsl.version>2026.1</teamcity.dsl.version>
     </properties>
 

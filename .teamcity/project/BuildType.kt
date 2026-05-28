@@ -9,14 +9,8 @@ object Build : BuildType({
         root(DslContext.settingsRoot)
     }
     
-    params {
-        param("env.NEXUS_USER", "%nexus.user%")
-        param("env.NEXUS_PASSWORD", "%nexus.password%")
-        param("env.NEXUS_URL", "%nexus.url%")
-    }
-    
+    // Параметры Maven-шагов автоматически берутся из проекта
     steps {
-        // 🔹 Тесты для ВСЕХ веток, КРОМЕ master
         step(MavenBuildStep {
             name = "Run Tests (non-master)"
             goals = "clean test"
@@ -28,7 +22,6 @@ object Build : BuildType({
             }
         })
         
-        // 🔹 Деплой ТОЛЬКО для master
         step(MavenBuildStep {
             name = "Deploy to Nexus (master only)"
             goals = "clean deploy"
@@ -41,13 +34,10 @@ object Build : BuildType({
         })
     }
     
-    // ✅ Публикация JAR
     artifactRules = "+:target/*.jar => artifacts/"
     
     triggers {
-        vcs {
-            branchFilter = "+:*"
-        }
+        vcs { branchFilter = "+:*" }
     }
     
     failureConditions {
