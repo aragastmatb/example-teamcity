@@ -4,27 +4,52 @@
 # Запускается после Terraform apply для финальной конфигурации
 # ============================================================================
 
-- name: 🌐 Применить базовые настройки ко всем хостам
-  hosts: all
-  become: true
-  gather_facts: true
-  
-  roles:
-    # Базовая настройка ОС: обновления, пользователи, безопасность
-    - role: base-system
-      tags: [base, setup]
-    
-    # Установка Java и Maven (единая версия для всех компонентов)
-    - role: java-maven
-      tags: [java, maven, setup]
-    
-    # Настройка мониторинга и логирования (опционально)
-    - role: monitoring
-      when: enable_monitoring | default(false)
-      tags: [monitoring, optional]
-
 - name: 🗄️ Настроить Nexus Repository Manager
-  hosts: nexus
+  hosts: nexus---
+# ============================================================================
+# SITE PLAYBOOK: Координация настройки всей инфраструктуры
+# ============================================================================
+
+- name: "Настройка Nexus Repository"
+  hosts: nexus_servers
+  become: true
+  roles:
+    - role: docker
+      tags: [docker, nexus]
+    - role: nexus
+      tags: [nexus]
+  vars:
+    nexus_admin_password: "{{ vault_nexus_password }}"
+    nexus_port: 8081
+
+- name: "Настройка TeamCity Server"
+  hosts: teamcity_servers
+  become: true
+  roles:
+    - role: docker
+      tags: [docker, teamcity]
+    - role: teamcity-server
+      tags: [teamcity, server]
+  vars:
+    teamcity_port: 8111
+    nexus_url: "http://{{ hostvars[groups['nexus_servers'][0]]['internal_ip'] }}:8081"
+  # Сервер настраивается после Nexus для корректной интеграции
+  serial: 1
+
+- name: "Настройка TeamCity Agent"
+  hosts: teamcity_agents
+  become: true
+  roles:
+    - role: docker
+      tags: [docker, teamcity]
+    - role: teamcity-agent
+      tags: [teamcity, agent]
+  vars:
+    # SERVER_URL — критическая переменная для подключения агента [[20]][[21]]
+    server_url: "http://{{ hostvars[groups['teamcity_servers'][0]]['internal_ip'] }}:8111"
+    agent_name: "{{ inventory_hostname }}-agent"
+  # Агент настраивается после сервера
+  serial: 1
   become: true
   gather_facts: true
   

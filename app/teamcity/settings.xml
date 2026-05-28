@@ -1,25 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
-  <servers>
-    <server>
-      <id>nexus</id>
-      <!-- TeamCity подставит реальные значения из параметров -->
-      <username>%env.NEXUS_USER%</username>
-      <password>%env.NEXUS_PASSWORD%</password>
-    </server>
-  </servers>
+<!-- =======================================================================
+     Maven settings.xml для TeamCity
+     Используется для деплоя артефактов в Nexus Repository
+     Документация: https://help.sonatype.com/en/maven-repositories.html [[18]]
+     ======================================================================= -->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 
+                              https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <!-- Профили для разных окружений -->
   <profiles>
     <profile>
       <id>nexus</id>
+      
+      <!-- Репозитории для разрешения зависимостей -->
       <repositories>
         <repository>
           <id>nexus-public</id>
-          <url>http://%env.NEXUS_URL%:8081/repository/maven-public/</url>
+          <url>http://10.10.10.9:8081/repository/maven-public/</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
         </repository>
       </repositories>
+      
+      <!-- Plugin repositories -->
+      <pluginRepositories>
+        <pluginRepository>
+          <id>nexus-public</id>
+          <url>http://10.10.10.9:8081/repository/maven-public/</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </pluginRepository>
+      </pluginRepositories>
     </profile>
   </profiles>
+  
+  <!-- Активация профиля по умолчанию -->
   <activeProfiles>
     <activeProfile>nexus</activeProfile>
   </activeProfiles>
+  
+  <!-- 🔑 СЕРВЕРНЫЕ КРЕДЕНШИАЛЫ ДЛЯ ДЕПЛОЯ -->
+  <!-- ID должен совпадать с <id> в pom.xml distributionManagement -->
+  <servers>
+    <server>
+      <id>nexus-releases</id>
+      <!-- credentialsJSON:token — специальный формат TeamCity для secure parameters -->
+      <username>credentialsJSON:nexus-user-token</username>
+      <password>credentialsJSON:nexus-password-token</password>
+    </server>
+    <server>
+      <id>nexus-snapshots</id>
+      <username>credentialsJSON:nexus-user-token</username>
+      <password>credentialsJSON:nexus-password-token</password>
+    </server>
+  </servers>
+  
 </settings>

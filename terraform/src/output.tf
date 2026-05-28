@@ -70,7 +70,7 @@ output "ansible_quick_start" {
     ansible ci_infrastructure -i ${var.ansible_inventory_path} -m ping -u ${var.ssh_user}
     
     # 🎯 Запуск полной настройки:
-    ansible-playbook -i ${var.ansible_inventory_path} playbooks/site.yml
+    ansible-playbook -i ${var.ansible_inventory_path} ../../ansible/playbooks/site.yml
     
     # 🔧 Настройка конкретного компонента:
     ansible-playbook -i ${var.ansible_inventory_path} -l teamcity_servers playbooks/configure-teamcity.yml
