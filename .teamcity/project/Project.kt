@@ -1,8 +1,8 @@
 import jetbrains.buildServer.configs.kotlin.*
 
 object Project : Project({
-    id = "ExampleTeamcityProject"
-    name = "Example TeamCity Project"
+    id("ExampleTeamcityProject")
+    name("Example TeamCity Project")
     
     buildType(Build)
     

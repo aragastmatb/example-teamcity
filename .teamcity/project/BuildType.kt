@@ -2,15 +2,11 @@ import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildSteps.MavenBuildStep
 
 object Build : BuildType({
-    id = "Build"
-    name = "TeamCity CI/CD Pipeline"
+    id("Build")
+    name("TeamCity CI/CD Pipeline")
     
     vcs {
         root(DslContext.settingsRoot)
-        branchFilter = """
-            +:*
-            -:pull/*
-        """.trimIndent()
     }
     
     params {
@@ -20,36 +16,39 @@ object Build : BuildType({
     }
     
     steps {
-        // 🔹 Шаг 1: Тесты для ВСЕХ веток, КРОМЕ master
+        // 🔹 Тесты для ВСЕХ веток, КРОМЕ master
         step(MavenBuildStep {
             name = "Run Tests (non-master)"
             goals = "clean test"
             pomLocation = "pom.xml"
             userSettingsSelection = "teamcity/settings.xml"
-            // Условие: выполнить если ветка НЕ равна master
-            conditions = listOf(
-                EqualsCondition("teamcity.build.branch", "master", invert = true)
-            )
+            
+            // ✅ Современный синтаксис условий (не требует EqualsCondition)
+            conditions {
+                doesNotEqual("teamcity.build.branch", "master")
+            }
         })
         
-        // 🔹 Шаг 2: Деплой ТОЛЬКО для master
+        // 🔹 Деплой ТОЛЬКО для master
         step(MavenBuildStep {
             name = "Deploy to Nexus (master only)"
             goals = "clean deploy"
             pomLocation = "pom.xml"
             userSettingsSelection = "teamcity/settings.xml"
-            // Условие: выполнить если ветка РАВНА master
-            conditions = listOf(
-                EqualsCondition("teamcity.build.branch", "master")
-            )
+            
+            conditions {
+                equals("teamcity.build.branch", "master")
+            }
         })
     }
     
-    // ✅ Публикация JAR в артефактах сборки (пункт 16 задания)
+    // ✅ Публикация JAR
     artifactRules = "+:target/*.jar => artifacts/"
     
     triggers {
-        vcs { /* Автозапуск при push */ }
+        vcs {
+            branchFilter = "+:*"
+        }
     }
     
     failureConditions {
