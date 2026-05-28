@@ -1,67 +1,102 @@
 ---
 # ============================================================================
 # ROLE: teamcity-agent
-# Задача: Настройка и запуск TeamCity Agent контейнера
+# Задачи: настройка Build Agent для выполнения задач сборки
 # ============================================================================
 
-- name: "Создать директорию для конфигурации агента"
-  file:
-    path: /opt/teamcity-agent/conf
-    state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: '0755'
+- name: 🔐 Создать пользователя для агента (если не существует)
+  user:
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    system: yes
+    shell: /bin/bash  # Агент может требовать интерактивный shell для некоторых задач
+    home: "{{ app_home }}"
+    create_home: yes
+    state: present
+  tags: [users, agent]
 
-- name: "Сгенерировать buildAgent.properties из шаблона"
+- name: 📁 Создать директории для агента
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0755'
+  loop:
+    - "{{ teamcity_agent_home }}"
+    - "{{ app_home }}/.m2"
+    - "{{ app_home }}/builds"
+  tags: [dirs, agent]
+
+- name: ⚙️ Настроить buildAgent.properties
   template:
     src: buildAgent.properties.j2
-    dest: /opt/teamcity-agent/conf/buildAgent.properties
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    dest: "{{ teamcity_agent_home }}/conf/buildAgent.properties"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
     mode: '0644'
-  vars:
-    # Передаём SERVER_URL для подключения к серверу
-    server_url: "{{ server_url | default('http://teamcity-server:8111') }}"
-    agent_name: "{{ agent_name | default(inventory_hostname) }}"
+    backup: yes
+  notify: Restart TeamCity Agent
+  tags: [config, agent]
 
-- name: "Запустить TeamCity Agent контейнер"
-  docker_container:
-    name: "{{ container_name | default('teamcity-agent') }}"
-    image: "{{ docker_image | default('jetbrains/teamcity-agent:latest') }}"
+- name: 🔗 Настроить Maven settings для агента
+  template:
+    src: maven-settings.xml.j2
+    dest: "{{ app_home }}/.m2/settings.xml"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0600'
+  tags: [config, maven, agent]
+
+- name: 🛠 Установить дополнительные инструменты для сборки
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - git
+    - curl
+    - unzip
+    - build-essential  # Для компиляции нативных зависимостей
+    - libssl-dev
+  tags: [packages, agent]
+
+- name: 🔄 Настроить systemd сервис для агента
+  template:
+    src: teamcity-agent.service.j2
+    dest: /etc/systemd/system/teamcity-agent.service
+    mode: '0644'
+  notify:
+    - Reload systemd
+    - Restart TeamCity Agent
+  tags: [systemd, agent]
+
+- name: 🚀 Запустить и включить агент в автозагрузку
+  systemd:
+    name: teamcity-agent
     state: started
-    restart_policy: unless-stopped
-    env:
-      # 🔑 SERVER_URL — обязательная переменная для авторегистрации [[20]]
-      SERVER_URL: "{{ server_url }}"
-      AGENT_NAME: "{{ agent_name | default(inventory_hostname) }}-agent"
-    volumes:
-      - "/opt/teamcity-agent/conf:/data/teamcity_agent/conf"
-      - "/opt/buildagent/work:/opt/buildagent/work"  # Сохранение checkout
-      - "/opt/buildagent/system:/opt/buildagent/system"  # Сохранение кэша
-    ports: []  # Агент не требует внешних портов
-  register: agent_container
+    enabled: yes
+    daemon_reload: yes
+  tags: [service, agent]
 
-- name: "Дождаться подключения агента к серверу"
-  uri:
-    url: "{{ server_url }}/app/rest/agents"
-    method: GET
-    status_code: [200, 401]  # 401 — нормально, если нет авторизации
-  register: agents_list
-  until: agents_list.json.agent is defined or agents_list.status == 401
-  retries: 30
-  delay: 10
-  ignore_errors: true  # Не блокируем, если сервер ещё не готов
+- name: ✅ Проверить статус агента
+  command: systemctl is-active teamcity-agent
+  register: agent_status
+  changed_when: false
+  tags: [healthcheck, agent]
 
-- name: "Вывести информацию о запуске"
+- name: 📋 Вывести информацию об агенте
   debug:
     msg: |
-      ✅ TeamCity Agent запущен!
-      📍 Конфигурация: /opt/teamcity-agent/conf
-      🔗 SERVER_URL: {{ server_url }}
-      📦 Контейнер: {{ agent_container.container.Name }}
+      ✅ TeamCity Agent настроен!
       
-      ⚠️  ВАЖНО: Авторизуйте агент в TeamCity UI:
-         1. Откройте {{ server_url }}
-         2. Перейдите в Administration → Agents
-         3. Найдите агента "{{ agent_name }}" со статусом "Unauthorized"
-         4. Нажмите "Authorize"
+      Статус: {{ agent_status.stdout }}
+      Домашняя директория: {{ teamcity_agent_home }}
+      Подключён к серверу: {{ teamcity_server_url }}
+      
+      🔍 Проверка в TeamCity:
+        → Administration → Agents → ожидайте появления нового агента
+        → Нажмите "Authorize" для подключения
+      
+      📋 Логи: journalctl -u teamcity-agent -f
+  tags: [info, agent]

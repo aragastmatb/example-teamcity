@@ -1,28 +1,60 @@
 # ============================================================================
-# TeamCity Build Agent Configuration
-# Генерируется Ansible из шаблона
+# TEAMCITY BUILD AGENT CONFIGURATION
+# Сгенерировано Ansible из шаблона
+# Все изменения в этом файле будут перезаписаны при следующем запуске playbook!
+# Для кастомизации используйте group_vars или extra-vars
 # ============================================================================
 
-# 🔑 КРИТИЧЕСКИ: URL TeamCity Server для подключения
-# Эта переменная передаётся через Ansible из Terraform outputs
-serverURL={{ server_url }}
+# ----------------- ПОДКЛЮЧЕНИЕ К СЕРВЕРУ -----------------
 
-# Имя агента в интерфейсе TeamCity
-name={{ agent_name | default(inventory_hostname) }}
+# 👉 КРИТИЧЕСКИ ВАЖНО: адрес TeamCity Server
+# Используется внутренний IP для надёжной связи внутри VPC
+serverUrl={{ teamcity_server_url | default('http://localhost:8111') }}
 
-# Порт для связи с сервером (по умолчанию 9090)
-ownPort=9090
+# Имя агента (отображается в UI TeamCity)
+name={{ inventory_hostname }}-agent
 
-# Авторизационный токен (генерируется сервером при первой авторизации)
-# authorizationToken=
+# ----------------- АУТЕНТИФИКАЦИЯ -----------------
 
-# Директории агента
-workDir=/opt/buildagent/work
-tempDir=/opt/buildagent/temp
-systemDir=/opt/buildagent/system
+# Токен авторизации (опционально, для автоматической авторизации)
+# 👉 Рекомендуется задавать через переменную или Ansible Vault
+# authorizationToken={{ agent_auth_token | default('') }}
 
-# Логирование
-logLimit=10485760
+# Если токен не задан, агент появится в "Unauthorized" и требует ручного подтверждения
 
-# Дополнительные параметры
-env.JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+# ----------------- РАБОЧАЯ ДИРЕКТОРИЯ -----------------
+
+# Где агент будет клонировать репозитории и выполнять сборки
+workDir={{ app_home }}/builds
+
+# Временные файлы
+tempDir={{ app_home }}/builds/tmp
+
+# Логи агента
+logsDir={{ app_home }}/builds/logs
+
+# ----------------- JVM ПАРАМЕТРЫ ДЛЯ ПРОЦЕССОВ СБОРКИ -----------------
+
+# Передаются Maven/Gradle процессам, запущенным агентом
+env.JAVA_HOME=/usr/lib/jvm/java-{{ java_version }}-openjdk-amd64
+env.MAVEN_OPTS=-Xmx1024m -XX:ReservedCodeCacheSize=256m
+
+# ----------------- ПРОКСИ (если нужен) -----------------
+# env.HTTP_PROXY=http://proxy.local:3128
+# env.HTTPS_PROXY=http://proxy.local:3128
+# env.NO_PROXY=localhost,127.0.0.1,{{ subnet_cidr | default('10.0.0.0/8') }}
+
+# ----------------- CUSTOM PROPERTIES -----------------
+
+# Дополнительные свойства для плагинов или кастомных шагов
+# teamcity.agent.my.custom.property=value
+
+# Ресурсы агента (для ограничения параллельных сборок)
+# По умолчанию: агент берёт все доступные ядра
+# teamcity.agent.cpu.benchmark=2000
+# teamcity.agent.enable.run.for.personal.builds=true
+
+# ----------------- ОТЛАДКА -----------------
+
+# Включить подробное логирование (только для отладки!)
+# teamcity.agent.log.level=debug
