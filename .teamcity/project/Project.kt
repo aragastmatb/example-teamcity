@@ -8,9 +8,6 @@ object Project : Project({
     
     vcsRoot {
         id = DslContext.settingsRoot.id
-        branchFilter = """
-            +:*
-            -:pull/*
-        """.trimIndent()
+        branchFilter = "+:*"
     }
 })

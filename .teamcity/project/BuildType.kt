@@ -23,7 +23,6 @@ object Build : BuildType({
             pomLocation = "pom.xml"
             userSettingsSelection = "teamcity/settings.xml"
             
-            // ✅ Современный синтаксис условий (не требует EqualsCondition)
             conditions {
                 doesNotEqual("teamcity.build.branch", "master")
             }

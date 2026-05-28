@@ -9,9 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <!-- 🔑 ОБЯЗАТЕЛЬНО: замените на вашу версию TeamCity -->
-        <teamcity.dsl.version>2024.03</teamcity.dsl.version>
-        <kotlin.version>1.8.22</kotlin.version>
+        <!-- 🔑 Версия должна ТОЧНО совпадать с версией сервера -->
+        <teamcity.dsl.version>2026.1</teamcity.dsl.version>
     </properties>
 
     <repositories>
@@ -31,7 +30,7 @@
             <groupId>org.jetbrains.teamcity</groupId>
             <artifactId>configs-dsl-kotlin-plugins</artifactId>
             <version>${teamcity.dsl.version}</version>
-            <type>pom</type> <!-- 🔑 Важно для плагинов -->
+            <type>pom</type>
         </dependency>
     </dependencies>
 </project>

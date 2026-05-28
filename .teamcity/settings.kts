@@ -1,5 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.*
 
+// 🔑 Версия сервера
 version = "2026.1"
 
 project {
