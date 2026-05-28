@@ -1,6 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.*
 
-version = "2024.03"
+version = "2026.1"
 
 project {
     vcsRoot(DslContext.settingsRoot)
