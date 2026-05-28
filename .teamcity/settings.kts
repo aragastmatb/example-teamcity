@@ -12,7 +12,7 @@ project {
 
     // Параметры наследуются всеми сборками проекта
     params {
-        param("nexus.url", "10.10.10.25:8081")       // Замените на внутренний IP Nexus
+        param("nexus.url", "10.10.10.9:8081")       // Замените на внутренний IP Nexus
         param("nexus.user", "ci-deployer")
         password("nexus.password", "zxx68ea4a703e0d8702b4a878ac238ec1a7")
     }
