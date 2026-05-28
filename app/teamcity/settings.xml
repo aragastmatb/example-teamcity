@@ -1,25 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
-  <servers>
-    <server>
-      <id>nexus</id>
-      <!-- TeamCity подставит реальные значения из параметров -->
-      <username>%env.NEXUS_USER%</username>
-      <password>%env.NEXUS_PASSWORD%</password>
-    </server>
-  </servers>
-  <profiles>
-    <profile>
-      <id>nexus</id>
-      <repositories>
-        <repository>
-          <id>nexus-public</id>
-          <url>http://%env.NEXUS_URL%:8081/repository/maven-public/</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-  <activeProfiles>
-    <activeProfile>nexus</activeProfile>
-  </activeProfiles>
+<!--
+    Этот файл используется Maven для аутентификации при деплое в Nexus.
+    
+    TeamCity автоматически подставляет значения %env.NEXUS_USER% и %env.NEXUS_PASSWORD%
+    из своих конфигурационных параметров в момент выполнения сборки.
+    
+    Файл должен лежать в репозитории по пути: teamcity/settings.xml
+    И быть указан в шаге Maven как "User settings file".
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 
+          http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    
+    <!-- ==================== АУТЕНТИФИКАЦИЯ ==================== -->
+    <servers>
+        <!-- 
+            Сервер с ID 'nexus' должен совпадать с <id> в <distributionManagement> pom.xml 
+            Это связка позволяет Maven автоматически использовать креды при деплое.
+        -->
+        <server>
+            <id>nexus</id>
+            
+            <!-- 
+                TeamCity подставляет реальные значения из параметров:
+                - %env.NEXUS_USER% → значение параметра nexus.user
+                - %env.NEXUS_PASSWORD% → значение параметра nexus.password
+                
+                Храните реальные пароли в TeamCity как "Password" тип параметров,
+                чтобы они не ложились в лог и не коммитились в репозиторий.
+            -->
+            <username>%env.NEXUS_USER%</username>
+            <password>%env.NEXUS_PASSWORD%</password>
+        </server>
+    </servers>
+    
+    <!-- ==================== ПРОФИЛИ ==================== -->
+    <profiles>
+        <profile>
+            <id>nexus-profile</id>
+            
+            <!-- Репозитории для ЗАГРУЗКИ зависимостей (read) -->
+            <repositories>
+                <repository>
+                    <id>nexus-public</id>
+                    <url>http://%env.NEXUS_URL%/repository/maven-public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>daily</updatePolicy>  <!-- Проверять обновления раз в день -->
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>  <!-- Всегда проверять SNAPSHOT -->
+                    </snapshots>
+                </repository>
+            </repositories>
+            
+            <!-- Плагины также можно брать из внутреннего Nexus -->
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>nexus-public</id>
+                    <url>http://%env.NEXUS_URL%/repository/maven-public/</url>
+                    <releases><enabled>true</enabled></releases>
+                    <snapshots><enabled>true</enabled></snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+    
+    <!-- ==================== АКТИВАЦИЯ ПРОФИЛЕЙ ==================== -->
+    <activeProfiles>
+        <activeProfile>nexus-profile</activeProfile>
+    </activeProfiles>
+    
 </settings>

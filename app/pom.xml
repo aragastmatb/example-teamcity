@@ -86,14 +86,14 @@
             <id>nexus</id>
             <name>Nexus Releases</name>
             <!-- Переменная подставляется из окружения TeamCity -->
-            <url>http://${env.NEXUS_URL}:8081/repository/maven-releases/</url>
+            <url>http://${env.NEXUS_URL}/repository/maven-releases/</url>
         </repository>
         
         <!-- SNAPSHOT-репозиторий: для разрабатываемых версий -->
         <snapshotRepository>
             <id>nexus</id>
             <name>Nexus Snapshots</name>
-            <url>http://${env.NEXUS_URL}:8081/repository/maven-snapshots/</url>
+            <url>http://${env.NEXUS_URL}/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     
@@ -102,7 +102,7 @@
         <repository>
             <id>nexus-public</id>
             <name>Nexus Public Group</name>
-            <url>http://${env.NEXUS_URL}:8081/repository/maven-public/</url>
+            <url>http://${env.NEXUS_URL}/repository/maven-public/</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
         </repository>

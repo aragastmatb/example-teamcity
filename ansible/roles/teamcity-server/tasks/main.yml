@@ -1,7 +1,7 @@
 ---
 # ============================================================================
 # ROLE: teamcity-server
-# Задачи: финальная настройка TeamCity Server после cloud-init
+# Задачи: полная настройка TeamCity Server после базовой инициализации
 # ============================================================================
 
 - name: 🔐 Создать группу и пользователя для TeamCity
@@ -16,7 +16,7 @@
     name: "{{ app_user }}"
     group: "{{ app_group }}"
     system: yes
-    shell: /usr/sbin/nologin  # Запрет интерактивного входа
+    shell: /usr/sbin/nologin
     home: "{{ teamcity_server_data }}"
     create_home: no
     state: present
@@ -54,9 +54,33 @@
     dest: "{{ teamcity_server_data }}/config/maven-settings.xml"
     owner: "{{ app_user }}"
     group: "{{ app_group }}"
-    mode: '0600'  # 🔐 Секретный файл с паролями — строгие права!
+    mode: '0600'  # Секретный файл с паролями!
     backup: yes
   tags: [config, nexus, teamcity]
+
+- name: 🌐 Настроить reverse proxy (опционально, для HTTPS)
+  block:
+    - name: Установить Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+    
+    - name: Настроить Nginx для TeamCity
+      template:
+        src: nginx-teamcity.conf.j2
+        dest: /etc/nginx/sites-available/teamcity
+        mode: '0644'
+      notify: Reload Nginx
+    
+    - name: Включить сайт и перезагрузить Nginx
+      file:
+        src: /etc/nginx/sites-available/teamcity
+        dest: /etc/nginx/sites-enabled/teamcity
+        state: link
+      notify: Reload Nginx
+  when: enable_https | default(false)
+  tags: [nginx, https, teamcity]
 
 - name: 🔄 Настроить systemd сервис для TeamCity
   template:
