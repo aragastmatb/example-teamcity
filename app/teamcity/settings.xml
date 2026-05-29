@@ -14,7 +14,7 @@
       <repositories>
         <repository>
           <id>nexus-public</id>
-          <url>http://%env.NEXUS_URL%:8081/repository/maven-public/</url>
+          <url>http://%env.NEXUS_URL%/repository/maven-public/</url>
         </repository>
       </repositories>
     </profile>
