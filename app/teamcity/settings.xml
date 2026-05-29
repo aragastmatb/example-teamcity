@@ -3,7 +3,7 @@
   <servers>
     <server>
       <id>nexus</id>
-      <!-- TeamCity подставит реальные значения из параметров -->
+      <!-- TeamCity подставит значения из параметров -->
       <username>%env.NEXUS_USER%</username>
       <password>%env.NEXUS_PASSWORD%</password>
     </server>
@@ -14,7 +14,7 @@
       <repositories>
         <repository>
           <id>nexus-public</id>
-          <url>http://%env.NEXUS_URL%/repository/maven-public/</url>
+          <url>http://%env.NEXUS_URL%:8081/repository/maven-public/</url>
         </repository>
       </repositories>
     </profile>

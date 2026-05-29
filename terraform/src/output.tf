@@ -86,7 +86,7 @@ output "ansible_quick_start" {
 output "next_steps" {
   description = "Пошаговая инструкция по завершению настройки после создания инфраструктуры"
   value = <<-EOT
-    🎯 ИНСТРУКЦИЯ ПО ЗАВЕРШЕНИЮ НАСТРОЙКИ TEAMCITY
+    🎯 ИНСТРУКЦИЯ ПО ЗАВЕРШЕНИЮ НАСТРОЙКИ TEAMCITY №1
     
     1️⃣  ОТКРОЙТЕ TEAMCITY:
         → URL: ${module.teamcity_server.external_ip}:8111
@@ -124,6 +124,37 @@ output "next_steps" {
         → В ветке master: выполнится "mvn clean deploy"
         → В фича-ветке: выполнится "mvn clean test"
         → Артефакты появятся в Nexus и во вкладке Artifacts сборки
+
+    🎯 ИНСТРУКЦИЯ ПО ЗАВЕРШЕНИЮ НАСТРОЙКИ №2
+    
+    1️⃣  ОТКРОЙТЕ TEAMCITY: ${module.teamcity_server.external_ip}:8111
+        → Создайте админа → Введите лицензию или "Start Trial"
+    
+    2️⃣  АВТОРИЗУЙТЕ AGENT:
+        → Administration → Agents → Authorize
+        → Агент подключится автоматически (SERVER_URL задан)
+    
+    3️⃣  ЗАПУСТИТЕ ANSIBLE ДЛЯ NEXUS:
+        cd ansible/
+        ansible-playbook -i inventory/cicd/hosts.yml site.yml -u ${var.ssh_user}
+    
+    4️⃣  НАСТРОЙТЕ NEXUS: http://${module.nexus.external_ip}:8081
+        → Логин: admin / Пароль: admin123 (смените!)
+        → Создайте пользователя ci-deployer с правами на деплой
+    
+    5️⃣  ДОБАВЬТЕ ПАРАМЕТРЫ В TEAMCITY:
+        Project Settings → Parameters:
+          • nexus.user = ci-deployer
+          • nexus.password = ******** (тип: Password)
+          • nexus.url = ${module.nexus.internal_ip}:8081
+    
+    6️⃣  ИМПОРТИРУЙТЕ ПРОЕКТ:
+        → Create Project → From URL → ваш fork
+        → Настройте шаги сборки с условиями
+    
+    7️⃣  ЗАПУСТИТЕ СБОРКУ:
+        • master: mvn clean deploy → артефакт в Nexus
+        • feature/*: mvn clean test → только тесты
     
     🚀 ГОТОВО! Ваш CI/CD пайплайн работает!
   EOT

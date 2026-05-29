@@ -126,7 +126,7 @@ variable "vm_cores" {
 variable "vm_core_fraction" {
   description = "Гарантированная доля vCPU (5, 20, 50, 100)"
   type        = number
-  default     = 100
+  default     = 20
 }
 
 variable "vm_memory" {
@@ -169,7 +169,7 @@ variable "run_ansible" {
 variable "ansible_inventory_path" {
   description = "Путь к файлу Ansible inventory (генерируется Terraform)"
   type        = string
-  default     = "../../ansible/inventory.yml"
+  default     = "../../ansible/inventory/inventory.yml"
 }
 
 variable "ansible_ssh_key_path" {

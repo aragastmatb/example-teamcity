@@ -24,22 +24,9 @@ project {
     
     // Глобальные параметры для всех сборок
     params {
-        param("nexus.url", "10.10.10.25:8081")       // Замените на внутренний IP Nexus
-        param("nexus.user", "ci-deployer")
-        password("nexus.password", "zxx68ea4a703e0d8702b4a878ac238ec1a7")
-    }
-
-    features {
-        buildReportTab {
-            id = "PROJECT_EXT_1"
-            title = "Code Coverage"
-            startPage = "coverage.zip!index.html"
-        }
-    }
-
-    cleanup {
-        baseRule {
-            preventDependencyCleanup = false
-        }
+        // Параметры для подключения к Nexus (задаются в UI или через secrets)
+        param("env.NEXUS_USER", "%nexus.user%")
+        param("env.NEXUS_PASSWORD", "%nexus.password%")
+        param("env.NEXUS_URL", "http://nexus:8081")
     }
 }

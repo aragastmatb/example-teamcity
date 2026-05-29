@@ -44,13 +44,12 @@ module "nexus" {
   source = "./modules/vm"
 
   vm_name            = "nexus-repo-vm"
-  vm_hostname        = "nexus"
-  vm_role            = "nexus"
+  vm_hostname        = "nexus-01"
+  vm_role            = "generic"
 
   project_label      = "teamcity"
   environment_label  = var.environment
-  extra_labels       = { component = "artifact-repository" }
-
+  
   subnet_id          = module.vpc.subnet_id
   security_group_ids = [module.security.security_group_id]
   
@@ -61,17 +60,14 @@ module "nexus" {
 
   vm_cores           = 2
   vm_memory          = var.vm_memory
-  vm_disk_size       = 50
+  vm_disk_size       = var.vm_disk_size
   preemptible        = var.preemptible
   vm_core_fraction   = var.vm_core_fraction
 
-  # Передаём пароль админа через переменную (в prod используйте Vault!)
-  nexus_admin_password = var.nexus_admin_password
-  
-  # Переменные для cloud-init шаблона
-  docker_image       = var.nexus_image
-  container_name     = "nexus"
-  container_port     = 8081
+  install_packages   = ["unzip", "openjdk-8-jdk-headless"]
+
+  # ✅ Явная зависимость: Nexus должен быть готов до настройки TeamCity
+  depends_on         = [module.vpc, module.security]
 }
 
 
@@ -148,7 +144,7 @@ module "teamcity_agent" {
   server_url = "http://${module.teamcity_server.internal_ip}:8111"
   nexus_url  = "http://${module.nexus.internal_ip}:8081"
   
-    docker_image       = var.teamcity_agent_image
+  docker_image       = var.teamcity_agent_image
   container_name     = "teamcity-agent"
   
   # Агент зависит от сервера: нельзя подключиться к несуществующему серверу

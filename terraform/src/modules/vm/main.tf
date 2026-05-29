@@ -29,10 +29,9 @@ locals {
 
     # Docker-специфичные
     docker_image       = var.docker_image
-    container_name     = var.container_name
+    container_name     = var.container_name != "" ? var.container_name : var.vm_role
     container_port     = var.container_port
-    container_env      = jsonencode(var.container_env)
-    
+
     # Ролевые
     server_url         = var.server_url
     nexus_url          = var.nexus_url

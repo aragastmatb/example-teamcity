@@ -1,0 +1,41 @@
+---
+# 🔑 КРИТИЧЕСКИ: Настройки для обхода ошибки с ACL
+ansible_remote_tmp: /tmp/ansible-${USER}
+ansible_common_remote_group: false
+# Более совместимые флаги sudo
+ansible_become_flags: '-H -S'
+
+# Параметры установки Nexus Repository Manager
+nexus_user_group: nexus
+nexus_user_name: nexus
+nexus_directory_data: "/home/{{ nexus_user_name }}/sonatype-work/nexus3"
+nexus_directory_home: "/home/{{ nexus_user_name }}/nexus"
+nexus_directory_log: "/home/{{ nexus_user_name }}/log"
+nexus_directory_package: "/home/{{ nexus_user_name }}/pkg"
+nexus_directory_tmp: "/home/{{ nexus_user_name }}/tmp"
+
+# Версия Nexus (из задания)
+nexus_version: 3.14.0-04
+nexus_download_url: https://download.sonatype.com/nexus/3
+
+# Сервис
+nexus_service_enabled: true
+nexus_ulimit: 65536
+nexus_context_path: /
+nexus_host: 0.0.0.0
+nexus_port: 8081
+nexus_port_check_timeout: 600
+
+# Edition
+nexus_edition: nexus-oss-edition
+nexus_features: nexus-oss-feature
+
+# JVM параметры (оптимизация под 4GB RAM)
+nexus_java_heap_size: 1200M
+nexus_java_max_direct_memory: 2G
+
+# Запуск
+nexus_service_start_on_boot: true
+
+# Порог свободного места (отключено)
+nexus_configuration_disk_free_space_limit: ~

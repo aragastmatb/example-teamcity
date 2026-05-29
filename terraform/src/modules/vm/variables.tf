@@ -182,6 +182,7 @@ variable "write_files" {
 variable "docker_image" {
   description = "Docker образ для запуска"
   type = string
+  default = ""
 }
 
 variable "container_name" {

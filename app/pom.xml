@@ -1,111 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
     
     <modelVersion>4.0.0</modelVersion>
     
-    <!-- ==================== КООРДИНАТЫ ==================== -->
-    <groupId>com.example</groupId>
-    <artifactId>example-teamcity</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <groupId>org.netology</groupId>
+    <artifactId>plaindoll</artifactId>
     <packaging>jar</packaging>
-    
-    <name>Example TeamCity Project</name>
-    <description>Учебный проект для CI/CD с TeamCity + Nexus</description>
-    
-    <!-- ==================== СВОЙСТВА ==================== -->
+    <version>0.0.2</version>
+
     <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <junit.version>4.13.2</junit.version>
     </properties>
-    
-    <!-- ==================== ЗАВИСИМОСТИ ==================== -->
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
-    <!-- ==================== ПЛАГИНЫ СБОРКИ ==================== -->
+
     <build>
         <plugins>
-            <!-- Компилятор Java -->
+            <!-- Maven Shade Plugin для создания executable JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-            
-            <!-- Тесты с подробным выводом -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <trimStackTrace>false</trimStackTrace>
-                    <reportFormat>plain</reportFormat>
-                </configuration>
-            </plugin>
-            
-            <!-- Создание executable JAR -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.example.Welcomer</mainClass>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>plaindoll.HelloPlayer</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-    
-    <!-- ==================== NEXUS INTEGRATION ==================== -->
-    <!-- 
-         distributionManagement указывает Maven, КУДА загружать артефакты
-         при выполнении `mvn deploy`. ID должен совпадать с settings.xml.
-    -->
+
+    <!-- ✅ NEXUS INTEGRATION: куда деплоить артефакты -->
     <distributionManagement>
-        <!-- RELEASE-репозиторий: для версий без -SNAPSHOT -->
         <repository>
             <id>nexus</id>
-            <name>Nexus Releases</name>
-            <!-- Переменная подставляется из окружения TeamCity -->
-            <url>http://${env.NEXUS_URL}/repository/maven-releases/</url>
+            <!-- 👉 Замените 51.250.13.64 на внутренний IP вашей ВМ Nexus -->
+            <url>http://${env.NEXUS_URL}:8081/repository/maven-releases</url>
         </repository>
-        
-        <!-- SNAPSHOT-репозиторий: для разрабатываемых версий -->
-        <snapshotRepository>
-            <id>nexus</id>
-            <name>Nexus Snapshots</name>
-            <url>http://${env.NEXUS_URL}/repository/maven-snapshots/</url>
-        </snapshotRepository>
     </distributionManagement>
-    
-    <!-- ==================== РЕПОЗИТОРИИ ДЛЯ ЗАГРУЗКИ ЗАВИСИМОСТЕЙ ==================== -->
+
+    <!-- Репозиторий для загрузки зависимостей -->
     <repositories>
         <repository>
             <id>nexus-public</id>
-            <name>Nexus Public Group</name>
-            <url>http://${env.NEXUS_URL}/repository/maven-public/</url>
+            <url>http://${env.NEXUS_URL}:8081/repository/maven-public/</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
         </repository>
     </repositories>
-    
 </project>
