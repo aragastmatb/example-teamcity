@@ -1,1 +1,3 @@
 target
+# Nexus credentials
+teamcity/settings.xml
