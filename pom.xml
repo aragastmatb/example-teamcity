@@ -12,12 +12,18 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
+	
 	<distributionManagement>
 		<repository>
-				<id>nexus</id>
-				<url>http://51.250.13.64:8081/repository/maven-releases</url>
+			<id>nexus-releases</id>
+			<url>scp://89.169.138.20:22/repository/maven-releases/</url>
 		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>scp://89.169.138.20:22/repository/maven-snapshots/</url>
+		</snapshotRepository>
 	</distributionManagement>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -28,6 +34,14 @@
 	</dependencies>
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>3.5.1</version>
+			</extension>
+		</extensions>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -51,5 +65,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
