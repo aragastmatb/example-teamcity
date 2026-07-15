@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="09d9bc93-bcee-4f57-adf4-a085c3b4b7ba" xsi:noNamespaceSchemaLocation="https://www.jetbrains.com/teamcity/schemas/2025.3/project-config.xsd">
+  <name>Build</name>
+  <description />
+  <settings>
+    <parameters>
+      <param name="maven.goal" value="clean test" />
+    </parameters>
+    <build-runners>
+      <runner id="log_info" name="log_info" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[#!/bin/bash
+echo "=== DIAGNOSTICS ==="
+echo "Current user: $(whoami)"
+echo "Home directory: $HOME"
+echo "SSH key exists: $(ls -la $HOME/.ssh/id_rsa 2>/dev/null || echo 'NOT FOUND')"
+echo "=== END DIAGNOSTICS ==="]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="assign_goal" name="assign goal" type="simpleRunner">
+        <parameters>
+          <param name="script.content"><![CDATA[if [ "%teamcity.build.branch%" = "master" ]; then
+  echo "##teamcity[setParameter name='maven.goal' value='clean deploy']"
+else
+  echo "##teamcity[setParameter name='maven.goal' value='clean test']"
+fi]]></param>
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="Maven2" name="" type="Maven2">
+        <parameters>
+          <param name="goals" value="%maven.goal%" />
+          <param name="localRepoScope" value="agent" />
+          <param name="maven.path" value="%teamcity.tool.maven3_9%" />
+          <param name="pomLocation" value="pom.xml" />
+          <param name="runnerArgs" value="-Dmaven.test.failure.ignore=true" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="userSettingsSelection" value="settings.xml" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="MyFirstProject_HttpsGithubComAlexmolovExampleTeamcityRefsHeadsMaster" />
+    </vcs-settings>
+    <build-triggers>
+      <build-trigger id="TRIGGER_1" type="vcsTrigger">
+        <parameters>
+          <param name="branchFilter" value="+:master" />
+          <param name="enableQueueOptimization" value="true" />
+          <param name="quietPeriodMode" value="DO_NOT_USE" />
+        </parameters>
+      </build-trigger>
+    </build-triggers>
+  </settings>
+</build-type>
+
