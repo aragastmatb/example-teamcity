@@ -1,5 +1,4 @@
 package plaindoll;
-
 public class Welcomer{
 	// Если хочешь больше веселья и информации про ДевОпс - приходи в мои каналы NotOps (telegram, YT, Boosty, Patreon)
 	// https://t.me/notopsofficial
@@ -14,5 +13,8 @@ public class Welcomer{
 	}
 	public String saySome(){
 		return "something in the way";
+	}
+	public String sayHunter(){
+		return "Welcome, hunter!";
 	}
 }
