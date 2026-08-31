@@ -16,6 +16,6 @@ public class Welcomer{
 		return "something in the way";
 	}
 	public String saySomething(){
-		return "Wake Up, Hunter, ... ";
+		return "Wake Up, hunter, ... ";
 	}	
 }
