@@ -15,4 +15,7 @@ public class Welcomer{
 	public String saySome(){
 		return "something in the way";
 	}
+	public String getRandomReply() {
+    return "The hunter is always lucky!";
+	}
 }
