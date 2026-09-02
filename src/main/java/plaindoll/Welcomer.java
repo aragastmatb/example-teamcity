@@ -16,3 +16,6 @@ public class Welcomer{
 		return "something in the way";
 	}
 }
+	public String getHunterReply() {
+		return "Hello, hunter! Welcome to the game.";
+	}
