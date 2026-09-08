@@ -1,1 +1,134 @@
-target
+# Compiled files
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+#*.tar.gz
+*.rar
+
+# Logs
+*.log
+logs/
+
+# Build tools
+target/
+out/
+build/
+bin/
+dist/
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Gradle
+.gradle/
+gradle/
+build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+atlassian-ide-plugin.xml
+.idea/shelf/
+.idea/dictionaries/
+.idea/libraries/
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/httpRequests/
+.idea/misc.xml
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/codeStyles/
+.idea/runConfigurations/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Eclipse
+.project
+.classpath
+.settings/
+.metadata
+*.launch
+
+# NetBeans
+nbproject/
+nb-configuration.xml
+nbbuild/
+dist/
+nbdist/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+.directory
+*.swp
+*.swo
+*~
+.#*
+
+# Sensitive / local config
+application-local.properties
+application-dev.properties
+application-*.local.properties
+.env
+.env.local
+.env.*.local
+
+# Dependency directories (Node.js / frontend)
+node_modules/
+jspm_packages/
+
+# Package Manager
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Docker
+*.pid
+docker-compose.override.yml
+.dockerignore
+
+# Secrets
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.key
+*.pem
+*.crt
+secrets/
