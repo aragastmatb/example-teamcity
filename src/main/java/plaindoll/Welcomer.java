@@ -15,4 +15,12 @@ public class Welcomer{
 	public String saySome(){
 		return "something in the way";
 	}
+	public String sayReply() {
+    String[] replies = {
+        "A hunter must hunt.",
+        "Good hunter, welcome back.",
+        "May the hunt begin, hunter."
+    };
+    return replies[new java.util.Random().nextInt(replies.length)];
+}
 }
