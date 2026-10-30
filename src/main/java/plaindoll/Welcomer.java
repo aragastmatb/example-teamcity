@@ -15,4 +15,7 @@ public class Welcomer{
 	public String saySome(){
 		return "something in the way";
 	}
+	public String addReply(){
+		return "Hello, good hunter. I am a doll. Here in this dream to look after you.";
+	}
 }
